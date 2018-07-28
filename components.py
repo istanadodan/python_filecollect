@@ -1,6 +1,4 @@
-import logging,sys
-import json
-import log
+import json, log
 
 class Env:
 
@@ -13,24 +11,25 @@ class Env:
                 cls.vars = json.load(f)
                 log.printlog('complete to loa env vars')
         return super().__new__(cls)
-    
-    def __init__(self):
-        pass
 
-    @staticmethod
-    def get_sortby():
-        return Env.vars["PrintOption"]["sortby"]
+    @classmethod
+    def get_sortby(cls):
+        cls()
+        return cls.vars["PrintOption"]["sortby"]
 
-    @staticmethod
-    def get_extension_list():
-        return Env.vars['extension']
+    @classmethod
+    def get_extension_list(cls):
+        cls()
+        return cls.vars['extension']
     
-    @staticmethod
-    def get_filtered_list():
-        return Env.vars['filter']['size']
+    @classmethod
+    def get_filtered_list(cls):
+        cls()
+        return cls.vars['filter']['size']
 
     @classmethod
     def format_check(cls, key):
+        cls()
         setting = cls.vars['setting']
         test_key = key + "_type"
         if test_key in setting and setting[test_key]=='number':
@@ -40,6 +39,9 @@ class Env:
 
     @classmethod
     def save(cls):
+        if not cls.vars:
+            log.printlog('not save due to empy vars')
+            return
         with open(cls.file, 'w') as f:
             json.dump(cls.vars, f, indent=1, ensure_ascii=False)
             log.printlog('save complete')
