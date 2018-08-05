@@ -1,7 +1,6 @@
 import json, log
 
 class Env:
-
     vars = {}
     file = './fileCollection/env.txt'
 
@@ -9,27 +8,44 @@ class Env:
         if not cls.vars:
             with open(cls.file, 'r') as f:
                 cls.vars = json.load(f)
-                log.printlog('complete to loa env vars')
+                log.printlog('complete to load env vars')
         return super().__new__(cls)
 
-    @classmethod
-    def get_sortby(cls):
-        cls()
-        return cls.vars["PrintOption"]["sortby"]
+    def __call__(self, name):
+        if not self.vars:
+            self._get_env()
+        selector = getattr(self, "get_"+name, lambda:'default')
+        return selector()
 
-    @classmethod
-    def get_extension_list(cls):
-        cls()
-        return cls.vars['extension']
+    def get_default(self):
+        return {}
+
+    def get_vars(self,key1=None,key2=None):
+
+        if not key1 and not key2:
+            return self.vars
+        elif key1:
+            if not key2:
+                return self.vars[key1]
+            else:
+                return self.vars[key1][key2]
+        else:
+            return {}
+
+    def get_url(self):
+        return self.get_vars('setting','url')
+
+    def get_sortby(self):
+        return self.get_vars('PrintOption','sortby')
+
+    def get_extension_list(self):
+        return self.get_vars('extension')
     
-    @classmethod
-    def get_filtered_list(cls):
-        cls()
-        return cls.vars['filter']['size']
+    def get_filtered_list(self):
+        return self.get_vars('filter','size')
 
     @classmethod
     def format_check(cls, key):
-        cls()
         setting = cls.vars['setting']
         test_key = key + "_type"
         if test_key in setting and setting[test_key]=='number':
@@ -46,35 +62,27 @@ class Env:
             json.dump(cls.vars, f, indent=1, ensure_ascii=False)
             log.printlog('save complete')
 
-class Folder:
-
+class Folder_template:
     def __init__(self, key, val):
         self.key = key
         self.obj = val
-        # logger.info('env',list)
         self._prepare()
     
     def _prepare(self):
         self.menu_list = list( self.obj.items() )
-        # logger.info(self.menu_list)
         self.flag_list = ['Folder'  if isinstance(v, dict) else 'File' for k,v in self.obj.items()]
-        # logger.info(self.flag_list)
 
     def show(self):
-        Folder.open(self)
-
-    @classmethod
-    def open(cls, self):
         menu_list = [item for item in self.obj]
         # logger.info(menu_list)
         for ix, (key, val) in enumerate( self.menu_list ):
             check = 'File'
             if isinstance(val, dict):
                 check = 'Folder'
-            print("[%s] %s %s [%s]" % (ix+1, key, val, self.flag_list[ix]) )
+            print("[%2d] %s %s [%s]" % (ix+1, key, str(val)[:50], self.flag_list[ix]) )
         else:
-            print("[%s] %s" % (ix+2, '추가하기'))
-            print("[%s] %s" % (ix+3, '돌아가기'))
+            print("[%2d] %s" % (ix+2, '추가하기'))
+            print("[%2d] %s" % (ix+3, '돌아가기'))
 
         while True:
             sel = input("선택은?")
@@ -96,12 +104,51 @@ class Folder:
 
         # if isinstance(self.obj[sel_menu], dict):
         # if isinstance(sel_val, dict):
+
+        self.open(i_sel, (sel_key,sel_val) )
+
+    def open(self, i_sel, v_sel):
+        pass
+
+class Folder(Folder_template):
+    def __init__(self, key, val):
+        super().__init__(key, val)
+    
+    # i_sel:선택번호, v_sel:선택값튜플
+    def open(self, i_sel, v_sel):
+        sel_key, sel_val = v_sel[0], v_sel[1]
+
         if self.flag_list[i_sel] == 'Folder':
             Folder(sel_key, sel_val).show()
 
         else:
             # 직전 dict객체, 선택키, 저장시숫자변환여부 (상위 키에 대한 )
             File(self.obj, sel_key, Env.format_check(self.key) ).show()
+
+class Folder2(Folder_template):
+    def __init__(self, key, val):
+        super().__init__(key, val)
+    
+    # i_sel:선택번호, v_sel:(key, val) 선택값튜플
+    def open(self, i_sel, v_sel):
+        from sorting import Sorting
+        env = Env()
+        filter_list = env.get_filtered_list()
+        sel_key, sel_val = v_sel[0], v_sel[1]
+        
+        def filter1(e):
+            for key in filter_list:
+                if key in e and e[key] < filter_list[key]:
+                    return False
+            return True
+
+        sorted_list = Sorting.perform( filter( filter1, v_sel[1] ) )
+
+        for e in sorted_list:
+            if e["ext"] == 'G1':
+                print("{} : width {}, height{}".format(e['filename'], e['width'], e['height']))
+            else:
+                print("{}".format( e ) )
 
 class File:
     '''

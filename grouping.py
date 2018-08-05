@@ -4,9 +4,9 @@ class Grouping:
     cache = dict()
 
     def __new__(cls,ext, fname, dirname):
-        Env()
-        cls.ext = Env.vars['group_ext']
-        cls.cat = Env.vars['group_cat']
+        env = Env()
+        cls.ext = env('vars')['group_ext']
+        cls.cat = env('vars')['group_cat']
         cls.makeCategory(ext, fname, dirname)
         return super().__new__(cls)
     
