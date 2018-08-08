@@ -1,12 +1,6 @@
 import log, os, io, json
 from grouping import Grouping as grp
 
-def logging(fn):
-    def wrapper(*arg,**karg):
-        log.printlog('#####' + fn.__name__)
-        return fn(*arg,**karg)
-    return wrapper
-
 def getInfoZip(filepath):
     import time
     attrs = {'Access_time':os.path.getatime,
@@ -24,7 +18,7 @@ def getInfoImage(filepath):
     # ret.update(getInfoZip(filepath))    
     return ret
 
-@logging
+@log.logging
 def startHenshu(basepath):
     func ={'G1':getInfoImage,'G2':getInfoZip,'G3':getInfoZip,'G4':getInfoZip,'G5':getInfoZip,'G6':getInfoZip} 
     

@@ -17,3 +17,31 @@ my_logger = _get_logger()
 def printlog(msg):
     # logger  = _get_logger()
     my_logger.info(msg)
+
+def logging(msg, type=None):
+    # @logging 형식으로 호출하는 경우
+    def wrapper(*arg,**karg):
+        printlog('##### ' + msg.__name__ + ' #####')
+        return msg(*arg,**karg)
+    # @logging() 형식으로 호출하는 경우
+    def func(fn):
+        def wrapper(*arg,**karg):
+            # 메시지가없는 경우
+            if  not msg:
+                message = fn.__name__
+
+            # 메시지가있는 경우
+            # self.url값을 출력한다.
+            elif  type == 'url':
+                message = fn.__name__ + '(' + msg.format(arg[0].url) + ')'
+            else:
+                message = fn.__name__ +  '(' + msg + ')'
+
+            printlog('##### ' + message + ' #####')
+            return fn(*arg,**karg)
+        return wrapper
+
+    if hasattr(msg,'__call__'):
+        return wrapper
+    else:
+        return func
