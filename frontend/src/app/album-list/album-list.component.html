@@ -1,0 +1,8 @@
+
+  <ul>
+    <li *ngFor="let item of serverData; let ix=index">
+      <span><input type="text" value='{{ix}}'></span>
+      <span><input type="text" name="menu{{ix}}" value='{{ item }}'></span>
+      <span><input type="button" value="{{ix}}:VIEW" (click)="getImageList(item)"></span>
+    </li>
+  </ul>

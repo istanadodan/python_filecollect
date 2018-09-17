@@ -1,0 +1,23 @@
+<html>
+<head>
+</head>
+<body>
+    <h1>Image Page </h1>
+    <h2>menu</h2>
+    <form action="/result" method="POST">
+    <input type="hidden" name="index" value="test">
+    <ol>
+    {% for item in list %}
+      <div>
+        <span><input type="text" value='{{loop.index}}'></span>
+        <span><input type="text" name="menu{{loop.index}}" value='{{ item }}'></span>
+        <span><input type="submit" name="submit" value="{{loop.index}}:VIEW"></span>
+      </div>
+      
+    {% endfor %}
+
+    </ol>
+    </form>
+</body>
+
+</html>

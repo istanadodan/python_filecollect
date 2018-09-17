@@ -1,0 +1,8 @@
+div {display: inline;position: relative;}
+
+.comment {
+    position: absolute;
+    left:0px;
+    top:0px;
+    background-color: aquamarine;
+}

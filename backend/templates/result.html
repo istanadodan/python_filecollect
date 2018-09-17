@@ -1,0 +1,43 @@
+<html>
+<head>
+  <style>
+    div {
+      display: inline;
+      position: relative;
+      }
+    span {
+      display:inline-block;
+      /* width:100%; */
+    }
+    .filename {
+      position: absolute;
+      background-color:honeydew;
+      top:0px;
+      left:0px;
+      z-index:100;
+    }
+  </style>
+  <script type="text/javascript" src="app/static/form.js"></script>
+</head>
+<body>
+    <h1>Image Page </h1>
+    <h2>result</h2>
+    <!-- <input type="button" onclick="location.href='/'" value="뒤로가기"> -->
+    <input type="button" onclick="_submit();" value="뒤로가기">
+    <!-- <ol> -->
+    <ol>
+    {% for item in list%}
+      <div>        
+        <img src="{{ item }}" width="240">
+        <span class="filename">{{loop.index}}</span>
+        <!-- <span><img src="url_for('static',filename=folder+'/'+item['filename'])" width="240"></span> -->
+        <!-- <span><img src="/static/170110-신주쿠산책/20170106_223247_HDR.jpg" width="240"></span> -->
+      </div>
+      
+    {% endfor %}
+
+    </ol>
+
+</body>
+
+</html>
