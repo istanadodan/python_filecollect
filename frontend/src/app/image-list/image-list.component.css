@@ -1,8 +1,16 @@
-div {display: inline;position: relative;}
+section {
+    /* vertical-align: bottom; */
+}
+div {
+    display: inline-block;
+    position: relative;
+    vertical-align: bottom;
+}
 
 .comment {
+    width:100%;
     position: absolute;
     left:0px;
-    top:0px;
+    bottom:0px;
     background-color: aquamarine;
 }

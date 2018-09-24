@@ -1,0 +1,9 @@
+.navbar-header {
+    font-size: 2em;
+}
+
+.navbar-brand {
+    text-align: right;
+    padding-left: 1em;
+    background-color:aquamarine;
+}

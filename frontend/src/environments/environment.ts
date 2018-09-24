@@ -5,5 +5,5 @@
 
 export const environment = {
   production: false,
-  baseHref:'static/html/'
+  baseHref:'/'
 };

@@ -40,8 +40,45 @@ class MenuSwitch(object):
             # Folder2('root', buff ).show()
         return buff
 
-    def menu_default(self):
-        log.printlog("please reselect menu item.")
+    def menu_4(self, path, angle, resample, translate):
+        from PIL import Image
+        from time import time
+        current_milli_time = lambda: int(round(time() * 1000))
+        tmp_file_pathname='assets/img/temp'+str(current_milli_time())+'.jpg'
+        
+        rs_v = dict({'BICUBIC':Image.BICUBIC,
+                    'NEAREST':Image.NEAREST,
+                    'BILINEAR':Image.BILINEAR})
+
+        if resample and (resample in rs_v):
+            resample = rs_v[resample]
+        else:
+            resample = rs_v['BICUBIC']
+        dd = translate.split(',')
+        # print(dd)
+        r_translate = tuple((int(dd[0][1:]), int(dd[1][:-1]))) if translate else tuple(0,0)
+        print(r_translate)
+        if r_translate==(0,0):
+            expland = False
+        else:
+            expland = True
+        import os
+        # r_dir ="D:\\Project\\python\\fileCollection\\frontend\\src\\"
+        r_dir ="D:\\Project\\python\\fileCollection\\backend\\static\\html\\"
+        f_path = os.path.join(r_dir,path)
+        with Image.open(f_path) as img:
+            r_img = img.rotate(int(angle), 
+                    expand=expland,
+                    resample=Image.BICUBIC,
+                    translate=r_translate)
+            
+            r_img.save(os.path.join(r_dir,tmp_file_pathname))
+            # r_img.save(tmp_file_pathname)
+
+        log.printlog(path+'=>'+tmp_file_pathname)
+
+        return tmp_file_pathname
+
 
 def menu():
 

@@ -1,10 +1,10 @@
 
-<p>
-    <input type="button" value="앨범목록보기" (click)="navigate('/albumlist')">
-</p>
-
-<div *ngFor="let item of serverData; let ix=index">
-    <img src="{{item}}" width="240px">
-    <span class="comment"><input type="text" value='{{ix}}'></span>
-    
+<content>
+    <app-image-edit [path]="selected_img_path"></app-image-edit>
+</content>
+<section>
+<div *ngFor="let item of serverData; let ix=index" >
+    <img appDisplay [item]="item" width="240px" (remark)="ret($event)" (click)="load_edit_window(item)">
+    <span class="comment">{{comment}}</span>
 </div>
+</section>

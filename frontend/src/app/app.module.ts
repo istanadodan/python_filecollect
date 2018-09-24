@@ -8,16 +8,22 @@ import { AppComponent } from './app.component';
 import { ImageListComponent } from './image-list/image-list.component';
 import { AlbumListComponent } from './album-list/album-list.component';
 import { StatusinfoService} from './statusinfo.service';
+import { DisplayDirective } from './image-list/display.directive';
+import { ImageEditComponent } from './image-list/image-edit/image-edit.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
     AppComponent,
     AlbumListComponent,
-    ImageListComponent
+    ImageListComponent,
+    DisplayDirective,
+    ImageEditComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
+    FormsModule,
     RouterModule.forRoot([{
       path:"albumlist",
       component:AlbumListComponent},{

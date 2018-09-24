@@ -6,7 +6,7 @@ import os
 from model.query import Model,Album
 
 menu = MenuSwitch()
-
+dev_mode = True
 # , static_folder='static'
 # static_url_path='/static')
 # 서버내 폴더위치지정 외, 타 폴더지정시 스테틱폴더옵션을 사용한다.
@@ -78,7 +78,12 @@ def angular_get_albumlist():
 def angular_get_imagelist2(album_name):
     model = Model()
     data = model.get_image_name(album_name)
-    filelist = [url_for('static',filename=album_name+'/'+item[0]) for item in data]
+    if dev_mode:
+        filelist = ['assets/img/'+ album_name+'/'+item[0] for item in data]
+    else:
+        filelist = [url_for('static',filename=album_name+'/'+item[0]) for item in data]
+
+    # model.close()
     model.close()
     return jsonify(filelist)
 
@@ -89,8 +94,18 @@ def angular_get_imagelist(album_name):
     # print(jsonify(filelist))
     return jsonify(filelist)
 
+@app.route('/edit_image', methods = ['GET','POST'])
+def edit_image():
+    import json
+    param = json.loads(request.data.decode('utf-8'))    
+    tmp_path = menu.menu_4(**param)
+    ret = dict(data=tmp_path)
+    print("app.route %s" % ret)
+    return jsonify(ret)
+    
 @app.route('/angular',methods = ['POST', 'GET'])
 def angular_home():
+    import os
     root_dir = os.path.dirname(os.getcwd())
     print("root dir : %s" % root_dir)
     return send_from_directory(os.path.join(root_dir, 'python','fileCollection','backend','static', 'html'),'index.html')

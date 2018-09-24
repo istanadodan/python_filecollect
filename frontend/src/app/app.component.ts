@@ -16,11 +16,11 @@ export class AppComponent implements OnInit{
               public info: StatusinfoService){}
 
   ngOnInit(){
-    let tags = this.document.getElementsByTagName('base');
-    if (tags.length > 0) {
-      tags[0].setAttribute('href',environment.baseHref);
-      console.log("href changed to ",environment.baseHref);
-    }
+    // let tags = this.document.getElementsByTagName('base');
+    // if (tags.length > 0) {
+    //   tags[0].setAttribute('href',environment.baseHref);
+    //   console.log("href changed to ",environment.baseHref);
+    // }
     this.router.navigateByUrl('/albumlist');
   }
 }

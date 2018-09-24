@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
 
 import { StatusinfoService } from '../statusinfo.service'
 
@@ -11,18 +10,26 @@ import { StatusinfoService } from '../statusinfo.service'
 })
 export class ImageListComponent implements OnInit {
   serverData:JSON;
+  comment:string;
+  selected_img_path:string;
+
   constructor(private http:HttpClient, 
-              private status: StatusinfoService,
-              public router: Router) { }
-  navigate(url) {
-    this.status.album_name = "";
-    this.router.navigateByUrl(url);
-  }
+              private status: StatusinfoService
+              ) { }
+
   ngOnInit() {
     this.http.get('http://localhost:5000/api/imagelist/'+this.status.album_name).subscribe(data=>{
       this.serverData = data as JSON;
-     //  console.log(data);
+      // console.log("raw data : " + data);
     });
+  }
+
+  ret(e:string) {
+      this.comment = e;
+  }
+
+  load_edit_window(url:string) {
+    this.selected_img_path = url
   }
 
 }
