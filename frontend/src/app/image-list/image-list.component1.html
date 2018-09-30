@@ -1,0 +1,10 @@
+
+<p>
+    <input type="button" value="앨범목록보기" (click)="navigate('/albumlist')">
+</p>
+
+<div *ngFor="let item of serverData; let ix=index">
+    <img src="{{item}}" width="240px">
+    <span class="comment"><input type="text" value='{{ix}}'></span>
+    
+</div>

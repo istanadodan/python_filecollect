@@ -9,7 +9,6 @@
       "outDir": "../backend/static/html",
       "assets": [
         "assets",
-        "assets/img",
         "favicon.ico"
       ],
       "index": "index.html",

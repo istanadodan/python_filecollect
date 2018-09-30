@@ -11,6 +11,7 @@ import { StatusinfoService} from './statusinfo.service';
 import { DisplayDirective } from './image-list/display.directive';
 import { ImageEditComponent } from './image-list/image-edit/image-edit.component';
 import { FormsModule } from '@angular/forms';
+import { TestDirective } from './image-list/image-edit/test.directive';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { FormsModule } from '@angular/forms';
     AlbumListComponent,
     ImageListComponent,
     DisplayDirective,
-    ImageEditComponent
+    ImageEditComponent,
+    TestDirective
   ],
   imports: [
     BrowserModule,

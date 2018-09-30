@@ -1,7 +1,10 @@
 <article>
-    <img src="{{path}}" width="800px">
+    <img src="{{path}}" width="480px">
 </article>
-<article>
+<template #path_template>
+  <h3>Test</h3>
+</template>
+<article *appTest="!!path">
   <form #thisform="ngForm">
     <div class="form-group">
         <label for="angle">angle</label>

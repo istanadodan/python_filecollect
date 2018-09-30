@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewContainerRef, TemplateRef, ViewChild, ContentChild } from '@angular/core';
 import { HttpClient,HttpHeaders } from '@angular/common/http';
 
 @Component({
@@ -10,18 +10,21 @@ import { HttpClient,HttpHeaders } from '@angular/common/http';
 export class ImageEditComponent implements OnInit {
   
   @Input() path:String;
-  
+  @ViewChild(TemplateRef) tml:TemplateRef<any>;
   constructor(private http:HttpClient,
+              private view:ViewContainerRef
               ) { }
 
   ngOnInit() {
+    
   }
   log(data) {
     console.log(data);
+    this.view.createEmbeddedView(this.tml);
   }
 
   do_send(myform) {
-
+    this.view.createEmbeddedView(this.tml);
     let send_data_form = {
           'path':this.path,
           'angle':'',

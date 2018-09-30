@@ -15,7 +15,7 @@ class Model:
         return session.query(Album.album).group_by(Album.album).all()
     
     def get_image_name(self,name):
-        return session.query(Album.filename).filter_by(album=name).all()
+        return session.query(Album.filename, Album.width, Album.height).filter_by(album=name).all()
     
     def insert_all(self,albums):
         session.add_all(albums)

@@ -4,9 +4,11 @@ from flask_cors import CORS, cross_origin
 from app.service import MenuSwitch
 import os
 from model.query import Model,Album
+from app.ImageElement import Element
+from config import setting
 
 menu = MenuSwitch()
-dev_mode = True
+dev_mode = setting.dev_mode
 # , static_folder='static'
 # static_url_path='/static')
 # 서버내 폴더위치지정 외, 타 폴더지정시 스테틱폴더옵션을 사용한다.
@@ -21,10 +23,8 @@ dev_mode = True
 app = MultiStaticFlask(__name__)
 
 # MultistaticFlask
-app.static_folder=[
-    'D:\\내사진\\Album 2017',
-    'static'
-]
+app.static_folder=setting.static_folder
+
 # cross origin 
 CORS(app)
 
@@ -32,8 +32,6 @@ CORS(app)
 def init():
     # print(menu.menu_3().keys)
     resp = [key for key,value in menu.menu_3().items()]
-    # resp = [item.key for item in menu.menu_3()]
-    # resp = [['test1'],['test2'],['test3']]
     # return render_template('index.html',list=resp)
     print("WED Initial")
     
@@ -52,11 +50,11 @@ def init():
                             item['height'],
                             item['Size'])
                     albums.append(album)
-                    ct=ct+1
+                    ++ct
 
             model.insert_all(albums)
         print("inserted no:{}".format(ct))
-    # 동일 쓰레드에서 사용될 수 있도록 사용후 필히 닫도록 한다.
+    # 동일 쓰레드로 동작될 수 있도록 사용후 필히 닫도록 한다.
     model.close()
 
     return send_from_directory('static/html','index.html')
@@ -78,7 +76,12 @@ def angular_get_albumlist():
 def angular_get_imagelist2(album_name):
     model = Model()
     data = model.get_image_name(album_name)
-    if dev_mode:
+
+    if dev_mode:        
+        elements = [Element(el) for el in data]
+        elements[2].setCord(0,0)
+        elements[2].setXY(1,1)
+        print(elements[2])
         filelist = ['assets/img/'+ album_name+'/'+item[0] for item in data]
     else:
         filelist = [url_for('static',filename=album_name+'/'+item[0]) for item in data]
