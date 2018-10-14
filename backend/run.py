@@ -77,12 +77,22 @@ def angular_get_imagelist2(album_name):
     model = Model()
     data = model.get_image_name(album_name)
 
-    if dev_mode:        
-        elements = [Element(el) for el in data]
-        elements[2].setCord(0,0)
-        elements[2].setXY(1,1)
-        print(elements[2])
-        filelist = ['assets/img/'+ album_name+'/'+item[0] for item in data]
+    if dev_mode:
+        import app.NormalizeArray as nModule, app.ImageArray as imgModule
+        #최대값 6 * 기본크기 (320*180)
+        normal = nModule.Normalize()
+        # 데이타를 ImageElement 객체로 변환후 변환객체를 호출한다.
+        elements = [normal.convert(el) for el in data]
+        # print(elements)
+        # 배열을 받고 정렬을 수행한다.
+        icreate = imgModule.Create(elements)
+        icreate.start()
+        print("{0}건 축출".format(len(icreate.results)))
+        # elements[2].setCord(0,0)
+        # elements[2].setXY(1,1)
+        # print(elements[2])
+        # filelist = ['assets/img/'+ album_name+'/'+item[0] for item in data]
+        filelist = [['assets/img/'+ album_name+'/'+item.url,item.block,item.cord_rect,item.id] for item in icreate.results]
     else:
         filelist = [url_for('static',filename=album_name+'/'+item[0]) for item in data]
 

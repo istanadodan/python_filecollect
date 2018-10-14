@@ -10,7 +10,7 @@ import { HttpClient,HttpHeaders } from '@angular/common/http';
 export class ImageEditComponent implements OnInit {
   
   @Input() path:String;
-  @ViewChild(TemplateRef) tml:TemplateRef<any>;
+  @ContentChild(TemplateRef) tml:TemplateRef<any>;
   constructor(private http:HttpClient,
               private view:ViewContainerRef
               ) { }
@@ -20,11 +20,10 @@ export class ImageEditComponent implements OnInit {
   }
   log(data) {
     console.log(data);
-    this.view.createEmbeddedView(this.tml);
   }
 
   do_send(myform) {
-    this.view.createEmbeddedView(this.tml);
+    // this.view.createEmbeddedView(this.tml);
     let send_data_form = {
           'path':this.path,
           'angle':'',

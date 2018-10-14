@@ -1,16 +1,30 @@
-section {
-    /* vertical-align: bottom; */
+:host(app-image-list) {
+    width:100%;
+    background-color: black;
 }
-div {
-    display: inline-block;
-    position: relative;
+section {
     vertical-align: bottom;
+    position: relative;
+}
+div.new_line {
+    background-color: yellowgreen;
+    height:100%;
+}
+div.box {
+    position: absolute;
+    border:3 solid white;
+    overflow: hidden;
+    background-color: gray;
+    text-align: center;
 }
 
+.image-container {
+    width:240px;
+}
 .comment {
     width:100%;
     position: absolute;
     left:0px;
-    bottom:0px;
+    top:0px;
     background-color: aquamarine;
 }

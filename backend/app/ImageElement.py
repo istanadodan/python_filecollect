@@ -1,6 +1,7 @@
 
 class Element:
     id=0
+    block=None
     def __new__(cls, args=None):
         cls.id += 1
         return super().__new__(cls)
@@ -9,22 +10,32 @@ class Element:
         self.url = tpldata[0]
         self.width = tpldata[1]
         self.height = tpldata[2]
-        self.orientation = 'portrate' if self.width < self.height else 'landscape'
+        self.orientation = 'portrait' if self.width < self.height else 'landscape'
         self.id = Element.id
         
     def __repr__(self):
         if 'position' in self.__dict__:
-            ret = (self.id,self.url,self.width,self.height,self.orientation,self.position, self.cord_rect)
+            ret = (self.id,self.url,self.width,self.height,self.orientation,self.position, self.cord_rect,self.block)
         else:
             ret = (self.id,self.url,self.width,self.height,self.orientation)
 
         return ",".join(map(str, ret))
 
     def setXY(self,x,y):
-        self.cord_rect = (x,y, x+self.width, y+self.height)
+        if self.block:
+            self.cord_rect = (x,y, x+self.block[0], y+self.block[1])
+        else:
+            self.cord_rect = (x,y, x+self.width, y+self.height)
     
     def setRC(self,x,y):
         self.position = (x,y)
+
+    def update(self,dict_data):
+        self.block = dict_data
+
+    @staticmethod
+    def getLineElement(w,h):
+        return Element(('',w,h))
 
     def isInBounded(self, *argv):
         if len(argv) ==1:
@@ -43,13 +54,13 @@ class Element:
             x0, y0, x1, y1 = argv
 
         # 4개의 꼭지점이 비교대상과 동털어진 곳 조건을 설정하여 그 반대조건을 유도했다
-        test_0 = x1 < self.cord_rect[0] #촤측
+        test_0 = x1 <= self.cord_rect[0] #촤측
         test_1 = x0 >= self.cord_rect[2] #우측
-        test_2 = y1 < self.cord_rect[1] #상측
+        test_2 = y1 <= self.cord_rect[1] #상측
         test_3 = y0 >= self.cord_rect[3] #하측
         # 일부 및 전체 교차하는 경우 모두 적용가능
-        if not (test_0 or test_1 or test_2 or test_3):
-            return True
+        if test_0 or test_1 or test_2 or test_3:
+            return False
         
         # r_test_x0 = x0 <= self.cord_rect[0] and x0 > self.cord_rect[2]
         # r_test_x1 = x1 < self.cord_rect[0] and x1 > self.cord_rect[2]
@@ -60,7 +71,7 @@ class Element:
         # if r_test_x0 and r_test_x1 and r_test_y0 and r_test_y1:
         #     return True
 
-        return False
+        return True
 
 if __name__ == '__main__':
     tpldata = ('url',10,10)

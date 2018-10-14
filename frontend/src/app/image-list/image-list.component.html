@@ -1,10 +1,30 @@
 
-<content>
-    <app-image-edit [path]="selected_img_path"></app-image-edit>
-</content>
+<div class="nav-bar">
+    <div class="form-group">
+            <label for="img-size"></label><select type="input" name="img-size" [(ngModel)]="imgSize">
+                <option *ngFor="let size of ['180','240','360']">{{size}}</option>
+            </select>
+            <label for="checkNewLine"><input type="radio" name="checkNewLine"></label>
+    </div>
+</div>
 <section>
-<div *ngFor="let item of serverData; let ix=index" >
-    <img appDisplay [item]="item" width="240px" (remark)="ret($event)" (click)="load_edit_window(item)">
-    <span class="comment">{{comment}}</span>
+    <app-image-edit [path]="selected_img_path"></app-image-edit>
+</section>
+<section>
+<div class="box" *ngFor="let item of serverData; let ix=index,let x=item" 
+    [style.width.px]="item[1][0]" 
+    [style.top.px]="item[2][1]" 
+    [style.left.px]="item[2][0]" 
+    [style.height.px]="item[0].indexOf('.')>0?item[1][1]:0">
+    
+    <ng-template [ngIf]="item[0].indexOf('.')<0 && isChecked">
+            <div class="new_line">new line</div>
+    </ng-template>
+    <ng-template [ngIf]="item[0].indexOf('.')>=0">
+            <img appDisplay [item]="item" height="100%" (click)="load_edit_window(item)" (remark)="ret($event)">
+    </ng-template>
+    
+    <!-- <span class="comment">{{item[3] +' / '+item[2]}}</span> -->
+    <!-- <span class="comment">{{comment}}</span> -->
 </div>
 </section>
