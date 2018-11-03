@@ -1,4 +1,5 @@
 export const environment = {
   production: true,
-  baseHref:'/'
+  baseHref:'/',
+  viewStartAlbum:"170107-산책"
 };

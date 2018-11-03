@@ -1,27 +1,40 @@
 
-<div class="nav-bar">
+<div class="nav-bar"  #imageList>
     <div class="form-group">
             <label for="img-size"></label><select type="input" name="img-size" [(ngModel)]="imgSize">
                 <option *ngFor="let size of ['180','240','360']">{{size}}</option>
             </select>
-            <label for="checkNewLine"><input type="radio" name="checkNewLine"></label>
+            <label for="disp-type"></label><select type="input" name="img-disp-type" [(ngModel)]="disp_type" (ngModelChange)="changeDispType()">
+                    <option *ngFor="let type of ['type1','type2']" [value]="type">{{type}}</option>
+            </select>
+            <label for="checkNewLine"><input type="checkbox" [(ngModel)]="magnifyCheck" [value]="false">큰이미지</label>
     </div>
 </div>
+
+<ng-template #test1>
+    <div>Template</div>
+    <app-image-edit [path]="selected_img_path" (closeTemplate)="closeTemplate()">
+            <ng-template let-data="form" let-items="items">
+                <ul>
+                    <li>
+                        <ng-template ngFor let-item [ngForOf]="items">
+                            <div>{{item + ':' + data[item] +' '}}</div>
+                        </ng-template>
+                    </li>
+                </ul>
+            </ng-template>
+    </app-image-edit>
+</ng-template>
+<ng-template #test2><div>Test</div></ng-template>
+
 <section>
-    <app-image-edit [path]="selected_img_path"></app-image-edit>
-</section>
-<section>
-<div class="box" *ngFor="let item of serverData; let ix=index,let x=item" 
-    [style.width.px]="item[1][0]" 
-    [style.top.px]="item[2][1]" 
-    [style.left.px]="item[2][0]" 
-    [style.height.px]="item[0].indexOf('.')>0?item[1][1]:0">
+<div appDisplay class="box" *ngFor="let item of serverData; let ix=index" [flag]="magnifyCheck" [item]="item" (click)="load_edit_window($event,item[0])">
     
     <ng-template [ngIf]="item[0].indexOf('.')<0 && isChecked">
             <div class="new_line">new line</div>
     </ng-template>
     <ng-template [ngIf]="item[0].indexOf('.')>=0">
-            <img appDisplay [item]="item" height="100%" (click)="load_edit_window(item)" (remark)="ret($event)">
+            <img [src]="item[0]" height="100%">
     </ng-template>
     
     <!-- <span class="comment">{{item[3] +' / '+item[2]}}</span> -->

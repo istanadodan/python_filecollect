@@ -1,34 +1,36 @@
-<article>
-    <img src="{{path}}" width="480px">
-</article>
-<template #path_template>
-  <h3>Test</h3>
-</template>
-<article *appTest="!!path">
-  <form #thisform="ngForm">
-    <div class="form-group">
-        <label for="angle">angle</label>
-        <input required ngModel #angle name="angle" #angle="ngModel" (click)="log(angle)" type="text" class="form control" id="angle" value="0">
-        <div *ngIf="angle.touched && angle.invalid">
-          <div *ngIf="angle.errors.required">값이 필요합니다.</div>
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="resample">resample</label>
-        <select ngModel #resample class="form-control" name="resample" id="resample">
-          <option *ngFor="let name of ['BICUBIC','NEAREST','BILINEAR']" [value]="name">
-            {{name}}
-          </option>
-        </select>
-    </div>  
-    <div class="form-group">
-          <label for="traslate">translate</label>
-          <select ngModel #translate class="form-control" name="translate" id="resample">
-              <option *ngFor="let name of ['(0,0)','(100,0)','(200,0)']" [value]="name">
-                {{name}}
-              </option>
-            </select>          
-    </div> 
-    <button class="btn btn-primary" (click)="do_send(thisform)" [disabled]="!thisform.valid">실행</button>
-  </form>  
-</article>
+<div *appTest="!!path" class="container">
+  <div class="row">
+      <div class="col-8">
+          <img src="{{path}}" width="100%">
+      </div> 
+      <div class="col-auto">
+          <form #thisform="ngForm">
+              <div class="form-group">
+                  <label for="angle">angle</label>
+                  <input required ngModel name="angle" #angle="ngModel" (click)="log(angle)" type="text" class="form control" id="angle" maxlength="3">
+                  <div *ngIf="angle.touched && angle.invalid">
+                    <div *ngIf="angle.errors.required">값이 필요합니다.</div>
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label for="resample">resample</label>
+                  <select ngModel #resample class="form-control" name="resample" id="resample">
+                    <option *ngFor="let name of ['BICUBIC','NEAREST','BILINEAR']" [value]="name">
+                      {{name}}
+                    </option>
+                  </select>
+              </div>  
+              <div class="form-group">
+                    <label for="traslate">translate</label>
+                    <select ngModel #translate class="form-control" name="translate" id="resample">
+                        <option *ngFor="let name of ['(0,0)','(100,0)','(200,0)']" [value]="name">
+                          {{name}}
+                        </option>
+                      </select>          
+              </div> 
+              <button class="btn btn-primary" (click)="do_send(thisform)" [disabled]="!thisform.valid">실행</button>
+              <button class="btn btn-primary" (click)="onCloseTemplate()">닫기</button>
+            </form>  
+      </div> 
+  </div>
+</div>

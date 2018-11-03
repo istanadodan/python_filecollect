@@ -1,5 +1,4 @@
-article {
-    display: inline-block;
+.container {
     border:3px solid mediumaquamarine;
     vertical-align: top;
 }

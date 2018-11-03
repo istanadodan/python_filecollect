@@ -1,4 +1,4 @@
-from flask import Flask, jsonify,redirect,render_template,request,url_for,Response,send_from_directory
+from flask import Flask, jsonify,redirect,render_template,request,url_for,Response,send_from_directory,send_file
 from flask_multistatic import MultiStaticFlask
 from flask_cors import CORS, cross_origin
 from app.service import MenuSwitch
@@ -57,7 +57,8 @@ def init():
     # 동일 쓰레드로 동작될 수 있도록 사용후 필히 닫도록 한다.
     model.close()
 
-    return send_from_directory('static/html','index.html')
+    # return send_file(url_for('static',filename='web/index.html'))
+    return send_from_directory('static/web','index.html')
 
 @app.route('/api/albumlist',methods = ['GET'])
 def angular_get_albumlist2():
@@ -72,31 +73,27 @@ def angular_get_albumlist():
     resp = [key for key,value in menu.menu_3().items()]
     return jsonify(resp)
 
-@app.route('/api/imagelist/<string:album_name>',methods = ['GET'])
-def angular_get_imagelist2(album_name):
+@app.route('/api/disp_type/<string:album_name>/<string:disp_type>',methods = ['GET'])
+def angular_disp_type(album_name, disp_type):
     model = Model()
     data = model.get_image_name(album_name)
 
+    import app.NormalizeArray as nModule, app.ImageArray as imgModule
+    #최대값 6 * 기본크기 (320*180)
+    normal = nModule.Normalize(disp_type)
+    # 데이타를 ImageElement 객체로 변환후 변환객체를 호출한다.
+    elements = [normal.convert(el) for el in data]
+    # 배열을 받고 정렬을 수행한다.
+    icreate = imgModule.Create(elements)
+    icreate.start()
+    print("{0}건 축출".format(len(icreate.results)))
+    print(disp_type)
     if dev_mode:
-        import app.NormalizeArray as nModule, app.ImageArray as imgModule
-        #최대값 6 * 기본크기 (320*180)
-        normal = nModule.Normalize()
-        # 데이타를 ImageElement 객체로 변환후 변환객체를 호출한다.
-        elements = [normal.convert(el) for el in data]
-        # print(elements)
-        # 배열을 받고 정렬을 수행한다.
-        icreate = imgModule.Create(elements)
-        icreate.start()
-        print("{0}건 축출".format(len(icreate.results)))
-        # elements[2].setCord(0,0)
-        # elements[2].setXY(1,1)
-        # print(elements[2])
-        # filelist = ['assets/img/'+ album_name+'/'+item[0] for item in data]
         filelist = [['assets/img/'+ album_name+'/'+item.url,item.block,item.cord_rect,item.id] for item in icreate.results]
     else:
-        filelist = [url_for('static',filename=album_name+'/'+item[0]) for item in data]
+        # filelist = [[url_for('static',filename= 'web/assets/img/'+ album_name+'/'+item.url),item.block,item.cord_rect,item.id] for item in icreate.results]
+        filelist = [[url_for('static',filename= album_name+'/'+item.url),item.block,item.cord_rect,item.id] for item in icreate.results]
 
-    # model.close()
     model.close()
     return jsonify(filelist)
 

@@ -4,7 +4,7 @@ from os.path import join
 class setting:
     static_folder =[
         "D:\\내사진\\Album 2017",
-        "static",
+        "public",
         ]
     dev_mode = True
 

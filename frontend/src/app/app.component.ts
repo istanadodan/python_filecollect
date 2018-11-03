@@ -21,6 +21,6 @@ export class AppComponent implements OnInit{
     //   tags[0].setAttribute('href',environment.baseHref);
     //   console.log("href changed to ",environment.baseHref);
     // }
-    this.router.navigateByUrl('/albumlist');
+    this.router.navigateByUrl('/home');
   }
 }

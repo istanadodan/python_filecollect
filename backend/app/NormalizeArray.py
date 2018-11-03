@@ -10,8 +10,8 @@ class Normalize:
     base_height = setting.base_size['height']
     applying_ratio = 1
 
-    def __init__(self):
-        pass
+    def __init__(self, disp_type='type2'):
+        self.disp_type = disp_type;
 
     def convert(self,element):
         if not type(element) is Element:
@@ -59,7 +59,13 @@ class Normalize:
         if  test <=1:
             return 1
         elif  test < self._limit:
-            return math.ceil(test)
+            if self.disp_type == 'type1':
+                return math.ceil(test)
+
+            if self.element.orientation=='landscape':
+                return math.floor(test)
+            else:
+                return math.ceil(test)
         else:
             # limit을 초과할 수 없다
             return min(math.ceil(test), self._limit)

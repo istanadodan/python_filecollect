@@ -12,6 +12,7 @@ import { DisplayDirective } from './image-list/display.directive';
 import { ImageEditComponent } from './image-list/image-edit/image-edit.component';
 import { FormsModule } from '@angular/forms';
 import { TestDirective } from './image-list/image-edit/test.directive';
+import { AlbumHomeComponent } from './album-home/album-home.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { TestDirective } from './image-list/image-edit/test.directive';
     ImageListComponent,
     DisplayDirective,
     ImageEditComponent,
-    TestDirective
+    TestDirective,
+    AlbumHomeComponent
   ],
   imports: [
     BrowserModule,
@@ -30,7 +32,9 @@ import { TestDirective } from './image-list/image-edit/test.directive';
       path:"albumlist",
       component:AlbumListComponent},{
       path:'imagelist',
-      component:ImageListComponent  
+      component:ImageListComponent},{
+      path:'home',
+      component:AlbumHomeComponent
       }] 
     )
   ], 

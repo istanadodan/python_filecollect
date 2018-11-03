@@ -10,7 +10,7 @@ class setting:
 
     base_size = dict({'width':240, 'height':180})
     # base_size = dict({'width':120, 'height':90})
-    view_max_count = 6
+    view_max_count = 5
 
     root_dir = "D:\\Project\\python\\fileCollection\\"
 
@@ -21,4 +21,4 @@ class setting:
         if cls.dev_mode:
             return join(cls.root_dir, "frontend/src/",path)
         else:
-            return join(cls.root_dir, "backend/static/html/",path)
+            return join(cls.root_dir, "backend/static/web/",path)
