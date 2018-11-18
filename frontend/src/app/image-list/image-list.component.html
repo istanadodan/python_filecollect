@@ -7,13 +7,17 @@
             <label for="disp-type"></label><select type="input" name="img-disp-type" [(ngModel)]="disp_type" (ngModelChange)="changeDispType()">
                     <option *ngFor="let type of ['type1','type2']" [value]="type">{{type}}</option>
             </select>
+            <label for="layout-type"></label><select type="input" name="layout-disp-type" [(ngModel)]="layout_type" (ngModelChange)="changeLayoutType()">
+                <option *ngFor="let type of ['Default','Compact']" [value]="type">{{type}}</option>
+             </select>
             <label for="checkNewLine"><input type="checkbox" [(ngModel)]="magnifyCheck" [value]="false">큰이미지</label>
+            <button (click)="routing('slide')">Slide</button>
     </div>
 </div>
 
 <ng-template #test1>
     <div>Template</div>
-    <app-image-edit [path]="selected_img_path" (closeTemplate)="closeTemplate()">
+    <app-image-edit [path]="selected_img_path" [data]="slideList" (closeTemplate)="closeTemplate()">
             <ng-template let-data="form" let-items="items">
                 <ul>
                     <li>
@@ -28,16 +32,25 @@
 <ng-template #test2><div>Test</div></ng-template>
 
 <section>
-<div appDisplay class="box" *ngFor="let item of serverData; let ix=index" [flag]="magnifyCheck" [item]="item" (click)="load_edit_window($event,item[0])">
-    
-    <ng-template [ngIf]="item[0].indexOf('.')<0 && isChecked">
-            <div class="new_line">new line</div>
-    </ng-template>
-    <ng-template [ngIf]="item[0].indexOf('.')>=0">
-            <img [src]="item[0]" height="100%">
-    </ng-template>
-    
-    <!-- <span class="comment">{{item[3] +' / '+item[2]}}</span> -->
-    <!-- <span class="comment">{{comment}}</span> -->
-</div>
+<ng-template [ngIf]="layout_type=='Default'">
+    <div class="box1" *ngFor="let item of slideList; let ix=index" >
+        <img [src]="item[0]" width="240px">
+        <!-- <span class="comment">{{comment}}</span> -->
+    </div>
+</ng-template>
+<ng-template [ngIf]="layout_type!='Default'">
+    <div appDisplay class="box" *ngFor="let item of slideList; let ix=index" [flag]="magnifyCheck" [item]="item" (click)="load_edit_window($event,item[0])" (remark)="getComment($event)">
+
+            <ng-template [ngIf]="item[0].indexOf('.')<0 && isChecked">
+                    <div class="new_line">new line</div>
+            </ng-template>
+            <ng-template [ngIf]="item[0].indexOf('.')>=0">
+                    <img [src]="item[0]" height="100%">
+            </ng-template>
+            
+            <!-- <span class="comment">{{item[3] +' / '+item[2]}}</span> -->
+            <span class="comment">{{comment}}</span>
+        </div>
+</ng-template>
+
 </section>

@@ -1,0 +1,18 @@
+<ng-template ngFor let-elm let-ix="index" [ngForOf]="list">
+
+    <div [ngClass]="{thumb:true,on:elm['on'],off:!elm['on']}">
+       <img [src]="elm[0]" height="100%" (click)="clickImage(ix)">
+    </div>
+
+  <!-- <ng-template [ngIf]="elm['on']">
+    <div class="thumb on">
+        <img [src]="elm[0]" height="100%" (click)="setSlider(elm[0],ix)">
+    </div>
+  </ng-template>
+  <ng-template [ngIf]="!elm['on']">
+      <div class="thumb off">
+          <img [src]="elm[0]" height="100%" (click)="select_image(elm[0],ix)">
+      </div>
+  </ng-template> -->
+  
+</ng-template>

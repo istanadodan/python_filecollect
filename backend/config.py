@@ -4,6 +4,7 @@ from os.path import join
 class setting:
     static_folder =[
         "D:\\내사진\\Album 2017",
+        "D:\\내사진\\Album 2018",
         "static",
         ]
     dev_mode = True

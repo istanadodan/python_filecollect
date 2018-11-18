@@ -23,6 +23,8 @@ class MenuSwitch(object):
         msg = menu.getResult()
         if msg['save_flag']:
             env.save()
+            # 最新urlを読み込んでおく
+            self.url = env('url')
 
     @log.logging("Henshu start from {0}","url")
     def menu_2(self):

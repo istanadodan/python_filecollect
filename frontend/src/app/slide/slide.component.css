@@ -1,0 +1,35 @@
+* {
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+            box-sizing: border-box;
+  }
+
+.header {
+    padding:10px 20px;
+    background-color: black;
+}
+.footer {
+    position: fixed;
+    height:80px;
+    bottom: 0;
+    left:auto;
+    background-color: aliceblue;
+}
+.slider {
+    width:800px;
+    height:600px;
+    margin:0 auto;
+    padding:20px 20px
+}
+
+.slide {
+    border: solid yellowgreen 10px;
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+            box-sizing: border-box;
+}
+.stop {
+    border: solid turquoise 10px;
+    padding:20px;
+    opacity: 0.5;
+}

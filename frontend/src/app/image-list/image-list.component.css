@@ -13,10 +13,14 @@ section {
     overflow: hidden;
     border: 1px solid white;
 }
+.box1 {
+    display:flex;
+    align-items: flex-start;
+}
 .comment {
     width:100%;
     position: absolute;
     left:0px;
     top:0px;
-    background-color: aquamarine;
+    background-color:beige;
 }

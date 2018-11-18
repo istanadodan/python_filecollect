@@ -1,0 +1,14 @@
+.thumb {
+    display: inline-block;
+    padding:0;
+    height:80px;
+}
+.on {
+    border: 3px;
+    border-style: solid;
+    border-color:chartreuse;
+    /* padding:2 2; */
+}
+.off {
+    padding:0 0;
+}

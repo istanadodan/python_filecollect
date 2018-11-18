@@ -4,7 +4,6 @@ from config import setting
 import math
 
 class Normalize:
-    _type = 1
     _limit = setting.view_max_count
     base_width = setting.base_size['width']
     base_height = setting.base_size['height']
@@ -53,7 +52,6 @@ class Normalize:
             self.element.update((self.base_width, self.base_height))
         
         print("getNorm : %s" % out_rate)
-        return self.element
 
     def _check_limit(self, test):
         if  test <=1:

@@ -1,14 +1,17 @@
 import { Component, OnInit, Input, EventEmitter,ChangeDetectorRef,ViewContainerRef, TemplateRef, ViewChild, ContentChild } from '@angular/core';
 import { HttpClient,HttpHeaders } from '@angular/common/http';
+import { Observable, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-image-edit',
   templateUrl: './image-edit.component.html',
   styleUrls: ['./image-edit.component.css'],
+  inputs:['data'],
   outputs:['closeTemplate']
 })
 export class ImageEditComponent implements OnInit {
   
+  private data;
   @Input() path:String;
   @ContentChild(TemplateRef) tml:TemplateRef<any>;
   closeTemplate = new EventEmitter();
@@ -19,7 +22,17 @@ export class ImageEditComponent implements OnInit {
               private cdrf:ChangeDetectorRef
               ) { }
 
-  ngOnInit() {  }
+  ngOnInit() { 
+    const size = this.data.length;
+    const intv = Observable.interval(3000);
+    const observer=(x)=>console.log(x);
+    const slide = Observable.from(this.data);
+    const slider = slide.map((x)=>x[0]).subscribe(observer);
+    intv.subscribe((i)=>{
+      // console.log(this.data[i][0]);
+      this.path = this.data[i % size][0];
+    }); 
+   }
 
   onCloseTemplate() {
     this.closeTemplate.emit();

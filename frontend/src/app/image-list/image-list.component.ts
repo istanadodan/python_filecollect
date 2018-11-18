@@ -1,5 +1,4 @@
-import { Component, AfterViewInit,OnInit,HostBinding,ElementRef, TemplateRef, ViewChild, ViewContainerRef, EmbeddedViewRef, Input 
-          } from '@angular/core';
+import { Component, OnInit,HostBinding,ElementRef, TemplateRef, ViewChild, ViewContainerRef, EmbeddedViewRef, Input } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { StatusinfoService } from '../statusinfo.service'
 import { TemplateAst } from '@angular/compiler';
@@ -13,13 +12,15 @@ import {Observable} from 'rxjs/Observable';
   inputs:['data']
 })
 export class ImageListComponent implements OnInit {
-  serverData:JSON;
+  slideList:JSON;
   comment:string;
   selected_img_path:string;
   imgSize:number=240;
   isChecked:boolean = false;
   disp_type:string='type1';
+  layout_type:string='Default';
   magnifyCheck:boolean = false;
+  private _baseUrl = "http://localhost:5000/api/";
 
   private viewer:EmbeddedViewRef<any> = null;
   @ViewChild('test1',{read:TemplateRef}) template1:TemplateRef<any>;
@@ -36,17 +37,38 @@ export class ImageListComponent implements OnInit {
   ngOnInit() { }
 
   changeDispType() {
-    console.log('changed');
+    console.log('표시형식 변경');
     this.http.get('http://localhost:5000/api/disp_type/'+this.status.album_name+'/'+this.disp_type).subscribe(data=>{
-      this.serverData = data as JSON;
+      this.slideList = data as JSON;
     });
   }
-  
+  changeLayoutType() {
+    console.log('레이아웃 변경');
+    // data형식 :
+    const observer = data => this.slideList = data as JSON;
+    const url = this.getConcat("layout/",this.status.album_name, this.disp_type, this.layout_type)
+    // this.http.get('http://localhost:5000/api/layout/'+this.status.album_name+'+'+this.disp_type+'+'+this.layout_type)
+    this.http.get(url).subscribe(observer);
+  }
+  private getConcat(path,...params) {
+    const delimit = "+";
+    let ret = this._baseUrl.concat(path);
+    params.forEach(arg=>{ //for(let arg of params)
+      ret = ret.concat(arg).concat(delimit);
+    });
+    console.log("url결과 :",ret.substr(0, ret.length-1));
+    return ret.substr(0, ret.length-1);
+  }
   @Input()
   set data(name:string) {
     if( name != null) {
       this.status.album_name = name;
-      this.changeDispType();
+      if(this.layout_type=='Defalut'){
+        this.changeLayoutType();
+      } else {
+        // this.changeDispType();
+        this.changeLayoutType();
+      }
     }
   }
   private zIndex:number;
@@ -54,7 +76,7 @@ export class ImageListComponent implements OnInit {
   private height:string;
 
   setOverFlow(event:MouseEvent, flag:string){
-    console.log('check'+this.magnifyCheck);
+    // console.log('check'+this.magnifyCheck);
     if(!this.magnifyCheck) {
         return;
     }
@@ -85,6 +107,13 @@ export class ImageListComponent implements OnInit {
       // this.viewer = null;
     }
     this.viewer = this.viewContainer.createEmbeddedView(this.template1);
+  }
+  routing(url) {
+    this.status.slideList = this.slideList;
+    this.status.navigate(url);
+  }
+  getComment(msg) {
+    this.comment = msg.data;
   }
 
 }

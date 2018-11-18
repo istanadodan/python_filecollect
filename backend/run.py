@@ -1,11 +1,16 @@
 from flask import Flask, jsonify,redirect,render_template,request,url_for,Response,send_from_directory,send_file
 from flask_multistatic import MultiStaticFlask
 from flask_cors import CORS, cross_origin
-from app.service import MenuSwitch
+import logging
+from app.service import MenuSwitch, CompactLayout, DefaultLayout
 import os
 from model.query import Model,Album
 from app.ImageElement import Element
 from config import setting
+from werkzeug.routing import BaseConverter
+
+#logger설정
+logging.basicConfig(level="DEBUG", format="%(asctime)s %(levelname)s %(message)s")
 
 menu = MenuSwitch()
 dev_mode = setting.dev_mode
@@ -40,7 +45,7 @@ def init():
     if len(db) == 0:
         print("DB setup")
         ct = 0
-        for key,value in db.items():
+        for key,value in menu.menu_3().items():
             albums = list()
             for item in value:
                 if 'width' in item:
@@ -77,22 +82,67 @@ def angular_get_albumlist():
 def angular_disp_type(album_name, disp_type):
     model = Model()
     data = model.get_image_name(album_name)
+    # import app.NormalizeArray as nModule, app.ImageArray as imgModule
+    # #최대값 6 * 기본크기 (320*180)
+    # normal = nModule.Normalize(disp_type)
+    # # 데이타를 ImageElement 객체로 변환후 변환객체를 호출한다.
+    # elements = [normal.convert(el) for el in data]
+    # # 배열을 받고 정렬을 수행한다.
+    # items = imgModule.Create(elements)
+    # items.start()
+    # Layout Factory를 생성하여 위 normalize와 중간데이타인 배열 등을 캡슐화시킴. 
+    # 아울러 다른 items으로 간편이 전환이 가능하도록 했음
+    builder = CompactLayout(disp_type,data)
+    # builder = DefaultLayout(disp_type,data)
+    builder.create()
+    #items데이타를 반환반음
+    items = builder.getLayout()
 
-    import app.NormalizeArray as nModule, app.ImageArray as imgModule
-    #최대값 6 * 기본크기 (320*180)
-    normal = nModule.Normalize(disp_type)
-    # 데이타를 ImageElement 객체로 변환후 변환객체를 호출한다.
-    elements = [normal.convert(el) for el in data]
-    # 배열을 받고 정렬을 수행한다.
-    icreate = imgModule.Create(elements)
-    icreate.start()
-    print("{0}건 축출".format(len(icreate.results)))
-    print(disp_type)
+    logging.info("{0}건 축출, disp_typed :{1}".format(len(items), disp_type))
+    
     if dev_mode:
-        filelist = [['assets/img/'+ album_name+'/'+item.url,item.block,item.cord_rect,item.id] for item in icreate.results]
+        filelist = [['assets/img/'+ album_name+'/'+item.url,item.block,item.cord_rect,item.id] for item in items]
     else:
-        # filelist = [[url_for('static',filename= 'web/assets/img/'+ album_name+'/'+item.url),item.block,item.cord_rect,item.id] for item in icreate.results]
-        filelist = [[url_for('static',filename= album_name+'/'+item.url),item.block,item.cord_rect,item.id] for item in icreate.results]
+        # filelist = [[url_for('static',filename= 'web/assets/img/'+ album_name+'/'+item.url),item.block,item.cord_rect,item.id] for item in items]
+        filelist = [[url_for('static',filename= album_name+'/'+item.url),item.block,item.cord_rect,item.id] for item in items]
+
+    model.close()
+    return jsonify(filelist)
+
+class ListConverter(BaseConverter):
+    def to_python(self, value):
+        return value.split('+')
+    def to_url(self,values):
+        return "+".join(BaseConverter.to_url(value) for value in values)
+
+app.url_map.converters['list'] = ListConverter
+
+@app.route('/api/layout/<list:req_lists>',methods = ['GET'])
+def angular_layout_type(req_lists):
+    album_name = req_lists[0]
+    disp_type = req_lists[1]
+    layout = req_lists[2]
+    logging.debug("album_name :{},disp_type :{},layout :{}".format(album_name,disp_type,layout))
+    model = Model()
+    data = model.get_image_name(album_name)
+    if layout=='Default':
+        builder = DefaultLayout(disp_type,data)
+    else:
+        builder = CompactLayout(disp_type,data)
+    builder.create()
+    #items데이타를 반환반음
+    items = builder.getLayout()
+
+    logging.info("{0}건 축출, disp_typed :{1}".format(len(items), disp_type))
+    
+    if dev_mode:
+        if layout=='Default':
+            filelist = [['assets/img/'+ album_name+'/'+item.url,item.id] for item in items]
+        else:
+            filelist = [['assets/img/'+ album_name+'/'+item.url,item.block,item.cord_rect,item.id] for item in items]
+    else:
+        # filelist = [[url_for('static',filename= 'web/assets/img/'+ album_name+'/'+item.url),item.block,item.cord_rect,item.id] for item in items]
+        filelist = [[url_for('static',filename= album_name+'/'+item.url),item.block,item.cord_rect,item.id] for item in items]
 
     model.close()
     return jsonify(filelist)
