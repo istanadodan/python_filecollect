@@ -7,3 +7,7 @@
     padding-left: 1em;
     background-color:aquamarine;
 }
+
+li {
+    display: inline-block;
+}

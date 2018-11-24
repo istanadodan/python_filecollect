@@ -7,7 +7,7 @@ import { RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
 import { ImageListComponent } from './image-list/image-list.component';
 import { AlbumListComponent } from './album-list/album-list.component';
-import { StatusinfoService} from './statusinfo.service';
+import { StatusinfoService, EventShareService, SlideDirectionControl} from './statusinfo.service';
 import { DisplayDirective } from './image-list/display.directive';
 import { ImageEditComponent } from './image-list/image-edit/image-edit.component';
 import { FormsModule } from '@angular/forms';
@@ -46,7 +46,9 @@ import { SlideThumbnailListComponent } from './slide/slide-thumbnail-list/slide-
   ], 
   providers: [
     {provide:APP_BASE_HREF, useValue:environment.baseHref},
-    StatusinfoService
+    StatusinfoService,
+    EventShareService,
+    SlideDirectionControl
   ],
   bootstrap: [AppComponent]
 })

@@ -1,10 +1,15 @@
 <div class="container-fluid header">
-  <button (click)="routing('home')">뒤로가기</button>   
-  <button (click)="change_mode()">{{op_mode['txt']}}</button>  
+  <button (click)="routing('home')">뒤로가기</button>
+
+  <select (ngModelChange)="dirChange($event)" [(ngModel)]="slideDirection">
+    <option *ngFor="let direction of ['right','left']" [value]="direction">{{direction}}</option>
+  </select>
+
+  <button (click)="change_mode()">{{op_mode['txt']}}</button>
 </div>
 <div class="container-fluid slider">
   <input type="image" [src]="path" height="100%" [ngClass]="getClass()" disabled>
 </div>
-<div class="container-fluid footer">
-  <app-slide-thumbnail-list [list]="images" [ix]="ix" (clk_ix)="setSlider($event)">0</app-slide-thumbnail-list>
+<div class="container-fluid footer rounded-circle">
+  <app-slide-thumbnail-list [list]="images" [ix]="ix" [dir]="slideDirection" (clk_ix)="setSlider($event)">0</app-slide-thumbnail-list>
 </div>

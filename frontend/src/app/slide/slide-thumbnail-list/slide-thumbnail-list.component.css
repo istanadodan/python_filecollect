@@ -1,14 +1,16 @@
 .thumb {
+    text-align: center;
+    vertical-align: middle;
     display: inline-block;
-    padding:0;
-    height:80px;
+    margin:0;
+    height:85%;
 }
 .on {
-    border: 3px;
+    border: 4px;
     border-style: solid;
     border-color:chartreuse;
-    /* padding:2 2; */
+    padding:3px 0px;
 }
 .off {
-    padding:0 0;
+    padding:3px 0px;
 }

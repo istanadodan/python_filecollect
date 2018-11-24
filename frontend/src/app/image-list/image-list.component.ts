@@ -45,7 +45,13 @@ export class ImageListComponent implements OnInit {
   changeLayoutType() {
     console.log('레이아웃 변경');
     // data형식 :
-    const observer = data => this.slideList = data as JSON;
+    const observer = data => {
+      this.slideList = data as JSON;
+      this.status.slideList = this.slideList;
+      Object.keys(this.status.slideList).forEach( (el,ix) => {
+        this.status.slideList[ix][2] = ix;
+      } );
+    }
     const url = this.getConcat("layout/",this.status.album_name, this.disp_type, this.layout_type)
     // this.http.get('http://localhost:5000/api/layout/'+this.status.album_name+'+'+this.disp_type+'+'+this.layout_type)
     this.http.get(url).subscribe(observer);
@@ -109,7 +115,6 @@ export class ImageListComponent implements OnInit {
     this.viewer = this.viewContainer.createEmbeddedView(this.template1);
   }
   routing(url) {
-    this.status.slideList = this.slideList;
     this.status.navigate(url);
   }
   getComment(msg) {

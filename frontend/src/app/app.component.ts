@@ -1,8 +1,8 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { environment } from '../environments/environment.prod';
 import { Router } from '@angular/router'
-import {StatusinfoService } from './statusinfo.service';
+import {StatusinfoService,EventShareService } from './statusinfo.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -10,9 +10,10 @@ import {StatusinfoService } from './statusinfo.service';
 })
 export class AppComponent implements OnInit{
   title = '앨범';
-  
+  @ViewChild('btn_slide') slide_btn:ElementRef;
   constructor(@Inject(DOCUMENT) private document,
               private router:Router,
+              private share:EventShareService,
               public info: StatusinfoService){}
 
   ngOnInit(){
@@ -21,6 +22,11 @@ export class AppComponent implements OnInit{
     //   tags[0].setAttribute('href',environment.baseHref);
     //   console.log("href changed to ",environment.baseHref);
     // }
-    this.router.navigateByUrl('/home');
+    //this.router.navigateByUrl('/home');
+    this.share.changeEmitted$.subscribe(()=>this.enableSlideBtn());
+  }
+  enableSlideBtn(){
+    this.slide_btn.nativeElement.disabled = false;
+    console.log("slide button enabled");
   }
 }

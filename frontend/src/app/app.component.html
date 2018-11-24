@@ -1,5 +1,5 @@
 <!--The content below is only a placeholder and can be replaced.-->
-<!-- <div class="navbar navbar-default">
+<div class="navbar navbar-default">
   <div class="container-fluid">
     <div class="navbar-header">
         Welcome to {{ title }}! 
@@ -7,18 +7,18 @@
     </div>
     <span class="navbar-brand"><img src='favicon.ico'></span>
   </div>
-<ul class="nav navbar-nav">
+<ul class="nav">
   <li class="active">
       <button>menu1</button>
   </li>
   <li class="dropdown">
-    <button>menu2</button>
+    <button #btn_slide (click)="info.navigate('slide')" disabled>슬라이더</button>
   </li>
   <li class="dropdown">
-    <button (click)="info.navigate('home')">HOME</button>
+    <button (click)="info.navigate('home')">이미지보기</button>
   </li>
 </ul>
-</div> -->
+</div>
 
 <router-outlet></router-outlet>
 

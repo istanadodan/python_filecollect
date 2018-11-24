@@ -1,7 +1,6 @@
-<ng-template ngFor let-elm let-ix="index" [ngForOf]="list">
-
+<ng-template ngFor let-elm let-ix="index" [ngForOf]="aList">
     <div [ngClass]="{thumb:true,on:elm['on'],off:!elm['on']}">
-       <img [src]="elm[0]" height="100%" (click)="clickImage(ix)">
+       <img [src]="elm[0]" height="100%" (click)="clickImage(elm, ix)">
     </div>
 
   <!-- <ng-template [ngIf]="elm['on']">

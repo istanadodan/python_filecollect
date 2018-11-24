@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { StatusinfoService} from '../statusinfo.service';
 import { Observable, Subscription } from 'rxjs';
+import { ThrowStmt } from '@angular/compiler';
 
 @Component({
   selector: 'app-slide',
@@ -11,17 +12,19 @@ export class SlideComponent implements OnInit {
 
   images:JSON;
   selected_image:JSON;
-  path:string="";
+  path:string;
   size:number;
   op_mode:MODE;
   index:number;
   ix:number;
-  slide_class:string;
+  slideDirection;
+  INTERVAL:number = 2000;
   timer$:Subscription;
 
   constructor(private service:StatusinfoService) { 
-    this.size = Object.keys(this.service.slideList).length;
+    this.size = this.service.size();
     this.images = this.service.slideList;
+    this.slideDirection = this.service.slideDirection;
   }
 
   ngOnInit() {
@@ -33,7 +36,7 @@ export class SlideComponent implements OnInit {
   _initial() {
     this.index=0;
     this.ix=0;
-    this.selected_image = this.service.slideList[0];
+    this.selected_image = this.service.slideList?this.service.slideList[0]:{};
     this.selected_image['on'] = true;
     this.path = this.service.slideList[0][0];
   }
@@ -64,15 +67,17 @@ export class SlideComponent implements OnInit {
   }
   
   private start(){
-    const interval$ = Observable.interval(3000);
-    const observer = (x) => {
-        // this.selected_image['on'] = false;
-        this.ix = ( this.index + 1 ) % this.size;
-        this.selected_image =this.service.slideList[this.ix];
-        this.path =this.selected_image[0];
-        // this.selected_image['on'] = true;
+    const interval$ = Observable.interval(this.INTERVAL);
+    const observer = (x) => {      
+      if(this.slideDirection == 'left') {
+        this.index = (this.index-1)<0? this.size-1: this.index-1;
+      } else if(this.slideDirection == 'right') {
         this.index++;
-        // console.log("inx",x);
+      }
+      this.ix = ( this.index + 0 ) % this.size;
+      this.selected_image =this.service.slideList[this.ix];
+      this.path =this.selected_image[0];
+        // console.log("inx",this.index);
     }
     this.timer$ = interval$.subscribe(observer);
   }
@@ -80,7 +85,11 @@ export class SlideComponent implements OnInit {
     this.timer$.unsubscribe();
     this.service.navigate(url);
   }
-
+  dirChange(dir) {
+    //이 시점에서 this.slideDirection은 변동이 없음...
+    this.timer$.unsubscribe();
+    this.start();
+  }
   change_mode(){
     if (this.op_mode['mode']=='slide') {
       this.timer$.unsubscribe();

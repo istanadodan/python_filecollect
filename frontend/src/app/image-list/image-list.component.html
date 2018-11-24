@@ -4,7 +4,7 @@
             <label for="img-size"></label><select type="input" name="img-size" [(ngModel)]="imgSize">
                 <option *ngFor="let size of ['180','240','360']">{{size}}</option>
             </select>
-            <label for="disp-type"></label><select type="input" name="img-disp-type" [(ngModel)]="disp_type" (ngModelChange)="changeDispType()">
+            <label for="disp-type"></label><select type="input" name="img-disp-type" [(ngModel)]="disp_type" (ngModelChange)="changeLayoutType()">
                     <option *ngFor="let type of ['type1','type2']" [value]="type">{{type}}</option>
             </select>
             <label for="layout-type"></label><select type="input" name="layout-disp-type" [(ngModel)]="layout_type" (ngModelChange)="changeLayoutType()">
@@ -17,7 +17,7 @@
 
 <ng-template #test1>
     <div>Template</div>
-    <app-image-edit [path]="selected_img_path" [data]="slideList" (closeTemplate)="closeTemplate()">
+    <app-image-edit [path]="selected_img_path" [data]="status.slideList" (closeTemplate)="closeTemplate()">
             <ng-template let-data="form" let-items="items">
                 <ul>
                     <li>
@@ -39,7 +39,7 @@
     </div>
 </ng-template>
 <ng-template [ngIf]="layout_type!='Default'">
-    <div appDisplay class="box" *ngFor="let item of slideList; let ix=index" [flag]="magnifyCheck" [item]="item" (click)="load_edit_window($event,item[0])" (remark)="getComment($event)">
+    <div appDisplay class="box" *ngFor="let item of status.slideList; let ix=index" [flag]="magnifyCheck" [item]="item" (click)="load_edit_window($event,item[0])" (remark)="getComment($event)">
 
             <ng-template [ngIf]="item[0].indexOf('.')<0 && isChecked">
                     <div class="new_line">new line</div>
