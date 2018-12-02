@@ -6,7 +6,7 @@ import { Subject } from 'rxjs';
 export class StatusinfoService {
   album_name: string;
   slideList:JSON;
-  slideDirection:string="left";
+  slideDirection:string="right";
   VIEW_COUNT:number=6;
   constructor(private router: Router) { }
   navigate(url) {

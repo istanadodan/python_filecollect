@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { StatusinfoService} from '../statusinfo.service';
 import { Observable, Subscription } from 'rxjs';
-import { ThrowStmt } from '@angular/compiler';
 
 @Component({
   selector: 'app-slide',
@@ -11,14 +10,13 @@ import { ThrowStmt } from '@angular/compiler';
 export class SlideComponent implements OnInit {
 
   images:JSON;
-  selected_image:JSON;
+  link:iLink;
+  tiktok:number;
   path:string;
   size:number;
   op_mode:MODE;
-  index:number;
-  ix:number;
-  slideDirection;
-  INTERVAL:number = 2000;
+  slideDirection:string;
+  INTERVAL:number = 3000;
   timer$:Subscription;
 
   constructor(private service:StatusinfoService) { 
@@ -29,24 +27,59 @@ export class SlideComponent implements OnInit {
 
   ngOnInit() {
     this._initial();
-    this.setMode('slide');
-    this.start();
-    console.log(this.op_mode);
+    this.setMode('stop');
+    this.startSlide()
+    console.log("slide.component",this.op_mode);
   }
   _initial() {
-    this.index=0;
-    this.ix=0;
-    this.selected_image = this.service.slideList?this.service.slideList[0]:{};
-    this.selected_image['on'] = true;
-    this.path = this.service.slideList[0][0];
+    this.tiktok = 100;
   }
+  //섬네일이미지 클릭
+  onClick01() {
+    this.stopSlide();
+  } 
+  //섬네일컴포로부터 발생한 이벤트처리
+  onEmit01(link:iLink) {
+    this.link = link;
+    this.path = this.link.src;
+    console.log("섬네일컴포로부터 발생한 이벤트처리",this.link.src);
+    this.startSlide();
+  } 
+  //슬라이드방향이 변경될때 발생되는 이벤트
+  onChange01(){
+    this.stopSlide();
+  }
+  onEmit02(link:iLink) {
+    console.log("parent Direction Emit02");
+    this.link = link;
+    this.startSlide();
+  }
+  private startSlide() {
+    if (this.timer$!=null) {
+      this.stopSlide();
+    }
+    const observer = (v) =>{
+      this.tiktok = v;
+      console.log("handler",this.tiktok);  
+    }
+    this.timer$ = Observable.interval(this.INTERVAL).subscribe(observer);
+    this.setMode("slide");
+  }
+  //슬라이딩 인터벌용 핸들러
+  //핸들러안에서는 this는 oberable객체를 가르킴.
+  private handler01(v){
+    this.tiktok = v;
+    this.size++;
+    console.log("handler",this.tiktok);
+  }
+  private stopSlide() {
+    this.timer$.unsubscribe();
+    this.timer$ = null;
+    this.setMode("stop");
+  }  
   getClass() {
-    if (this.op_mode['mode']=='slide') {
-      return {'slide':true}
-    }
-    else {
-      return {'slide':false,'stop':true}
-    }
+    const isSlide:boolean = this.op_mode['mode']=='slide';
+    return {'slide':isSlide,'stop':!isSlide};
   }
   setMode(mode) {
     switch(mode) {
@@ -58,29 +91,7 @@ export class SlideComponent implements OnInit {
         break;
     }
   }
-  setSlider(clk_ix) {
-    this.timer$.unsubscribe();    
-    this.index = clk_ix; //clicked image's no
-    this.selected_image = this.images[clk_ix]; //slide image
-    this.path = this.selected_image[0]; //src
-    this.start();
-  }
-  
-  private start(){
-    const interval$ = Observable.interval(this.INTERVAL);
-    const observer = (x) => {      
-      if(this.slideDirection == 'left') {
-        this.index = (this.index-1)<0? this.size-1: this.index-1;
-      } else if(this.slideDirection == 'right') {
-        this.index++;
-      }
-      this.ix = ( this.index + 0 ) % this.size;
-      this.selected_image =this.service.slideList[this.ix];
-      this.path =this.selected_image[0];
-        // console.log("inx",this.index);
-    }
-    this.timer$ = interval$.subscribe(observer);
-  }
+ 
   routing(url) {
     this.timer$.unsubscribe();
     this.service.navigate(url);
@@ -88,19 +99,41 @@ export class SlideComponent implements OnInit {
   dirChange(dir) {
     //이 시점에서 this.slideDirection은 변동이 없음...
     this.timer$.unsubscribe();
-    this.start();
+    this.startSlide();
   }
   change_mode(){
     if (this.op_mode['mode']=='slide') {
-      this.timer$.unsubscribe();
+      this.stopSlide();
       this.setMode('stop');
     } else {
       this.setMode('slide');
-      this.start();
+      this.startSlide();
     }
   }
 }
+interface iLink {
+  src:string;
+  total:number;
+  index:number;
+}
 interface MODE {
   mode:string;
-  txt:string;
+  txt:string;  
+}
+
+class State {
+  STATE:Array<string> = ['slide','stop'];
+  DIRECTION:Array<string>=['left','right'];
+  name:string;
+  description:string;
+  nIndex:number;
+  dir:string;
+  operate() {
+    switch(this.name) {
+      case this.STATE[0]:
+
+      case this.STATE[1]:
+        
+    }
+  }
 }
